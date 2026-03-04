@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -10,6 +10,8 @@ import { CatalogModule } from './catalog/catalog.module';
 import { UsersModule } from './users/users.module';
 import { GeneralModule } from './general/general.module';
 
+const mailerLogger = new Logger('MailerModule');
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, }),
@@ -17,29 +19,26 @@ import { GeneralModule } from './general/general.module';
       process.env.MONGO_URI
     ),
 
-    MailerModule.forRoot({
-      transport: {
-        host: process.env.SMTP_EMAIL_LONG,
-        port: process.env.SMTP_PORT,
-        ignoreTLS: true,
-        secure: true, // use SSL
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS_16
-        }
-      }
-      /* 
-      transport: {
-          host: process.env.SMTP_EMAIL_SHORT,
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS_16
-        }
-      ,}
-      */
-    }),
+    /* MailerModule.forRootAsync({
+      useFactory: () => {
+        const transportOptions = {
+          host: process.env.SMTP_EMAIL_LONG,
+          port: parseInt(process.env.SMTP_PORT, 10),
+          // Para la mayoría de servicios como Gmail, `secure` es true en el puerto 465.
+          secure: parseInt(process.env.SMTP_PORT, 10) === 465,
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS_16,
+          },
+        };
+        mailerLogger.log(`📧 Opciones de transporte de Mailer cargadas: { host: '${transportOptions.host}', port: ${transportOptions.port}, secure: ${transportOptions.secure}, user: '${transportOptions.auth.user}' }`);
+        return {
+          transport: transportOptions,
+        };
+      },
+    }), */
     QuoteModule,
-    EmailModule,
+    // EmailModule,
     CatalogModule,
     UsersModule,
     GeneralModule,
