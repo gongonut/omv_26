@@ -19,8 +19,8 @@ import { GeneralModule } from './general/general.module';
 
     MailerModule.forRoot({
       transport: {
-        host: process.env.SMPT_EMAIL_LONG,
-        port: process.env.SMPT_PORT,
+        host: process.env.SMTP_EMAIL_LONG,
+        port: process.env.SMTP_PORT,
         ignoreTLS: true,
         secure: true, // use SSL
         auth: {
