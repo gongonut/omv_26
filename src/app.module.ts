@@ -1,10 +1,10 @@
-import { Logger, Module } from '@nestjs/common';
+import { Logger, Module, Global } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { QuoteModule } from './quote/quote.module';
 import { ConfigModule } from '@nestjs/config';
-import { MailerModule } from '@nestjs-modules/mailer';
+import { MailerModule, MailerService } from '@nestjs-modules/mailer';
 import { EmailModule } from './email/email.module';
 import { CatalogModule } from './catalog/catalog.module';
 import { UsersModule } from './users/users.module';
@@ -19,7 +19,7 @@ const mailerLogger = new Logger('MailerModule');
       process.env.MONGO_URI
     ),
 
-    /* MailerModule.forRootAsync({
+    MailerModule.forRootAsync({
       useFactory: () => {
         const transportOptions = {
           host: process.env.SMTP_EMAIL_LONG,
@@ -36,9 +36,9 @@ const mailerLogger = new Logger('MailerModule');
           transport: transportOptions,
         };
       },
-    }), */
+    }),
     QuoteModule,
-    // EmailModule,
+    EmailModule,
     CatalogModule,
     UsersModule,
     GeneralModule,
